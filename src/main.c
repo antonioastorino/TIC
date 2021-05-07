@@ -1,5 +1,5 @@
+#include "block.h"
 #include "keyboard.h"
-#include <ctype.h>
 #include <memory.h>
 #include <pthread.h>
 #include <stdbool.h>
@@ -15,19 +15,6 @@
 char buffer[ROWS * COLS + 1];
 bool g_run = true;
 
-typedef struct point
-{
-    int8_t x;
-    int8_t y;
-} Point;
-
-typedef struct block
-{
-    u_int8_t size;
-    Point* bricks;
-    Point position;
-} Block;
-
 void print_to_buffer_at(char c, int8_t x, int8_t y, char* buffer)
 {
     if (x < ROWS && y < COLS)
@@ -40,23 +27,6 @@ void print_to_buffer_at(char c, int8_t x, int8_t y, char* buffer)
     }
 }
 
-void move_down(Block* block) { block->position.x += 1; }
-
-void rotate(Block* block, int8_t direction)
-{
-    Point tmp_bricks[block->size];
-    memcpy(&tmp_bricks, block->bricks, sizeof(block));
-    // for (u_int8_t i = 0; i < block->size; i++)
-    // {
-    // 	printf("new x = %d, old x = %d\n", tmp_bricks[i].x, block->bricks[i].x);
-    // }
-    for (u_int8_t i = 0; i < block->size; i++)
-    {
-        block->bricks[i].x = direction * (tmp_bricks[i].y);
-        block->bricks[i].y = -direction * (tmp_bricks[i].x);
-    }
-}
-
 void print_block_to_buffer(Block* block, char* buffer, char symbol)
 {
     for (u_int8_t i = 0; i < block->size; i++)
@@ -66,7 +36,7 @@ void print_block_to_buffer(Block* block, char* buffer, char symbol)
     }
 }
 
-void print_buffer(char* buffer) { fprintf(stdout, "\e[2J%s", buffer); }
+void print_buffer(char* buffer) { fprintf(stdout, "%s\e[%dA", buffer, ROWS); }
 
 void execute(char c)
 {
@@ -76,7 +46,7 @@ void execute(char c)
         g_run = false;
         break;
 
-        default:
+    default:
         break;
     }
 }
@@ -85,31 +55,13 @@ void exit_game() { Keyboard_reset(); }
 
 int main()
 {
+    printf("\e[2J");
     Keyboard_init();
     pthread_t keyboard_t;
     void* fn = Keyboard_listen;
     pthread_create(&keyboard_t, NULL, fn, execute);
-
-    Point* bricks = (Point*)malloc(4 * sizeof(Point*));
-    /* Let's draw the L:
-            (-1, 0)
-            (0, 0) (0, 1) (0, 2)
-    */
-    bricks[0].x = -1;
-    bricks[0].y = 0;
-    bricks[1].x = 0;
-    bricks[1].y = 0;
-    bricks[2].x = 0;
-    bricks[2].y = 1;
-    bricks[3].x = 0;
-    bricks[3].y = 2;
-
-    Block curr_block = {.size     = 4,
-                        .bricks   = bricks,
-                        .position = {
-                            .x = 4,
-                            .y = 4,
-                        }};
+    Block curr_block;
+    generate_block(&curr_block, 0);
 
     memset(&buffer, ' ', ROWS * COLS);
     // Set all the EOL

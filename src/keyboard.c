@@ -38,8 +38,4 @@ void Keyboard_listen(void (*execute)(char))
     }
 }
 
-void test() {
-    printf("test\n");
-}
-
 void Keyboard_reset() { tcsetattr(0, TCSANOW, &initial_settings); }
