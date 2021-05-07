@@ -2,6 +2,7 @@
 #include <ctype.h>
 #include <memory.h>
 #include <pthread.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -12,6 +13,7 @@
 #define CCW -1
 
 char buffer[ROWS * COLS + 1];
+bool g_run = true;
 
 typedef struct point
 {
@@ -66,27 +68,28 @@ void print_block_to_buffer(Block* block, char* buffer, char symbol)
 
 void print_buffer(char* buffer) { fprintf(stdout, "\e[2J%s", buffer); }
 
-void exit_game() {
-    Keyboard_reset();
+void execute(char c)
+{
+    switch (c)
+    {
+    case 27 /* escape */:
+        g_run = false;
+        break;
+
+        default:
+        break;
+    }
 }
+
+void exit_game() { Keyboard_reset(); }
 
 int main()
 {
-    // keboard_tr = pthread
     Keyboard_init();
-    while (1)
-    {
-        int n = getchar();
-        if (n == 'l') /* Escape key pressed */
-        {
-            break;
-        }
-        usleep(10000);
-        if (n != EOF)
-            fprintf(stdout, "%d\n", n);
-    }
+    pthread_t keyboard_t;
+    void* fn = Keyboard_listen;
+    pthread_create(&keyboard_t, NULL, fn, execute);
 
-    return 0;
     Point* bricks = (Point*)malloc(4 * sizeof(Point*));
     /* Let's draw the L:
             (-1, 0)
@@ -116,7 +119,7 @@ int main()
     }
     buffer[ROWS * COLS] = '\0';
 
-    for (int count = 0; count < 10; count++)
+    for (int count = 0; count < 10 && g_run == true; count++)
     {
         print_block_to_buffer(&curr_block, buffer, '#');
         print_buffer(buffer);
@@ -127,13 +130,7 @@ int main()
         rotate(&curr_block, CCW);
     }
 
-    // for (int row = 0; row < ROWS; row++)
-    // {
-    //     for (int col = 0; col < COLS; col++)
-    //     {
-    // 		print("%c", buffer[row][col]);
-    //     }
-    // }
+    pthread_join(keyboard_t, NULL);
     exit_game();
 
     return 0;

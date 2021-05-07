@@ -1,0 +1,9 @@
+{
+	"files.associations": {
+		"*.c": "c",
+		"*.ams": "hack_asm",
+		"*.asm": "nasm",
+		"*.rs": "rust",
+		"stdlib.h": "c"
+	}
+}
