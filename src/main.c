@@ -2,6 +2,7 @@
 #include "collision.h"
 #include "display.h"
 #include "keyboard.h"
+#include "logger.h"
 #include <memory.h>
 #include <pthread.h>
 #include <stdbool.h>
@@ -9,9 +10,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <unistd.h>
-
-#define CW 1
-#define CCW -1
+#include "common.h"
 
 char buffer[ROWS * COLS + 1];
 bool g_run = true;
@@ -30,7 +29,7 @@ void print_buffer(char* buffer) { fprintf(stdout, "%s\e[%dA\e[0E", buffer, ROWS)
 
 void scene_update(char* buffer)
 {
-
+    pthread_mutex_lock(&keyboard_lock);
     if (key_pressed.key_esc)
     {
         g_run = false;
@@ -60,6 +59,35 @@ void scene_update(char* buffer)
             Block_move(&curr_block, UP);
         }
     }
+    if (key_pressed.key_space)
+    {
+        while (!is_touchdown(buffer, &curr_block))
+        {
+            Block_move(&curr_block, DOWN);
+            usleep(5000);
+            print_block_to_buffer(&curr_block, buffer, '#');
+            print_buffer(buffer);
+            // Remove block from the buffer after printing it.
+            print_block_to_buffer(&curr_block, buffer, ' ');
+        }
+    }
+    if (key_pressed.key_j)
+    {
+        Block_rotate(&curr_block, CCW);
+        if (is_collision(buffer, &curr_block))
+        {
+            Block_rotate(&curr_block, CW);
+        }
+    }
+    if (key_pressed.key_l)
+    {
+        Block_rotate(&curr_block, CW);
+        if (is_collision(buffer, &curr_block))
+        {
+            Block_rotate(&curr_block, CCW);
+        }
+    }
+    pthread_mutex_unlock(&keyboard_lock);
     Keyboard_release_all();
     print_block_to_buffer(&curr_block, buffer, '#');
     print_buffer(buffer);
@@ -79,6 +107,7 @@ int main()
     // Clear screen and make cursor invisible.
     printf("\e[2J\e[?25l");
     Keyboard_init();
+    init_logger("logs.log", "logs.log");
     pthread_t keyboard_t;
     void* fn = Keyboard_listen;
     pthread_create(&keyboard_t, NULL, fn, NULL);
@@ -100,6 +129,7 @@ int main()
     Block_new(&curr_block);
 
     int frame_count = 0;
+    printf("Log level: %d\n", LOG_LEVEL);
     while (g_run)
     {
         scene_update(buffer);
@@ -111,9 +141,10 @@ int main()
             frame_count = 0;
             if (is_touchdown(buffer, &curr_block))
             {
-                print_block_to_buffer(&curr_block, buffer, '#');
+                print_block_to_buffer(&curr_block, buffer, '0');
                 Block_destroy(&curr_block);
                 Block_new(&curr_block);
+                
                 continue;
             }
             Block_move(&curr_block, DOWN);

@@ -1,13 +1,16 @@
 #ifndef BLOCK_H
 #define BLOCK_H
-#include <stdlib.h>
 #include <stdbool.h>
+#include <stdlib.h>
 
-typedef enum {
+typedef enum
+{
     DOWN,
     UP, /* used only to revert a collision */
     LEFT,
-    RIGHT
+    RIGHT,
+    CW,
+    CCW,
 } Direction;
 
 typedef struct point
@@ -25,7 +28,7 @@ typedef struct block
 } Block;
 
 void Block_move(Block*, Direction);
-void Block_rotate(Block*, int8_t);
+void Block_rotate(Block*, Direction);
 void Block_new(Block*);
 void Block_destroy(Block*);
 #endif /* BLOCK_H */

@@ -1,4 +1,5 @@
 #include "keyboard.h"
+#include "logger.h"
 #include <stdio.h>
 #include <termios.h>
 #include <unistd.h>
@@ -38,10 +39,20 @@ void Keyboard_press(char c)
     case 's':
         key_pressed.key_s = true;
         break;
+    case ' ':
+        key_pressed.key_space = true;
+        break;
+    case 'j':
+        key_pressed.key_j = true;
+        break;
+    case 'l':
+        key_pressed.key_l = true;
+        break;
     case 27:
         key_pressed.key_esc = true;
         break;
     default:
+        LOG_DEBUG("Key %d ignored", c);
         break;
     }
     pthread_mutex_unlock(&keyboard_lock);
@@ -49,12 +60,14 @@ void Keyboard_press(char c)
 
 void Keyboard_listen()
 {
+    LOG_INFO("Starting keyboard listener.");
     Keyboard_release_all();
     while (1)
     {
         int c = getchar();
         Keyboard_press(c);
-        if (c == 27) {
+        if (c == 27)
+        {
             break;
         }
     }
@@ -62,11 +75,15 @@ void Keyboard_listen()
 
 void Keyboard_release_all()
 {
+    LOG_TRACE("Releasing all keys - log level");
     pthread_mutex_lock(&keyboard_lock);
-    key_pressed.key_a   = false;
-    key_pressed.key_d   = false;
-    key_pressed.key_s   = false;
-    key_pressed.key_esc = false;
+    key_pressed.key_a     = false;
+    key_pressed.key_d     = false;
+    key_pressed.key_s     = false;
+    key_pressed.key_j     = false;
+    key_pressed.key_l     = false;
+    key_pressed.key_space = false;
+    key_pressed.key_esc   = false;
     pthread_mutex_unlock(&keyboard_lock);
 }
 

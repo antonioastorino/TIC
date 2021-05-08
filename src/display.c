@@ -1,6 +1,10 @@
 #include "display.h"
+#include "logger.h"
 
-char get_char_at(char* buffer, int8_t x, int8_t y) { return buffer[x * COLS + y]; }
+char get_char_at(char* buffer, int8_t x, int8_t y) { 
+    LOG_DEBUG("Getting char at (%d, %d)", x, y);
+    return buffer[x * COLS + y];
+    }
 
 void print_to_buffer_at(char c, int8_t x, int8_t y, char* buffer)
 {
