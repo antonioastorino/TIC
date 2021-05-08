@@ -1,11 +1,12 @@
 #include "collision.h"
 #include "display.h"
+#include "class_arena.h"
 
-bool is_touchdown(char* buffer, Block* block)
+bool is_touchdown(Arena* arena_vec, Block* block)
 {
     for (uint8_t i = 0; i < BLOCK_SIZE; i++)
     {
-        if (get_char_at(buffer, block->bricks[i].x + block->position.x + 1,
+        if (Arena_get_char_at(arena_vec, block->bricks[i].x + block->position.x + 1,
                         block->bricks[i].y + block->position.y)
             != ' ')
         {
@@ -15,11 +16,11 @@ bool is_touchdown(char* buffer, Block* block)
     return false;
 }
 
-bool is_collision(char* buffer, Block* block)
+bool is_collision(Arena* arena_vec, Block* block)
 {
     for (uint8_t i = 0; i < BLOCK_SIZE; i++)
     {
-        if (get_char_at(buffer, block->bricks[i].x + block->position.x,
+        if (Arena_get_char_at(arena_vec, block->bricks[i].x + block->position.x,
                         block->bricks[i].y + block->position.y)
             != ' ')
         {

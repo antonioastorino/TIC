@@ -4,6 +4,8 @@
 		"*.ams": "hack_asm",
 		"*.asm": "nasm",
 		"*.rs": "rust",
-		"common.h": "c"
+		"common.h": "c",
+		"display.h": "c",
+		"class_arena.h": "c"
 	}
 }

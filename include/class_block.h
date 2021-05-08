@@ -30,6 +30,6 @@ typedef struct
 
 void Block_move(Block*, Direction);
 void Block_rotate(Block*, Direction);
-void Block_new(Block*);
+Block Block_new();
 
 #endif /* CLASS_BLOCK_H */

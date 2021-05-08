@@ -61,9 +61,10 @@ void Block_rotate(Block* block, Direction direction)
     }
 }
 
-void Block_new(Block* block)
+Block Block_new()
 {
     char block_type = rand() % 6;
+    Block block;
     switch (block_type)
     {
     case 0:
@@ -72,32 +73,32 @@ void Block_new(Block* block)
                 (0, -1)
                 (1, -1) (1, 0) (1, 1)
         */
-        block->bricks[0].x = 0;
-        block->bricks[0].y = -1;
-        block->bricks[1].x = 1;
-        block->bricks[1].y = -1;
-        block->bricks[2].x = 1;
-        block->bricks[2].y = 0;
-        block->bricks[3].x = 1;
-        block->bricks[3].y = 1;
-        block->can_rotate  = true;
+        block.bricks[0].x = 0;
+        block.bricks[0].y = -1;
+        block.bricks[1].x = 1;
+        block.bricks[1].y = -1;
+        block.bricks[2].x = 1;
+        block.bricks[2].y = 0;
+        block.bricks[3].x = 1;
+        block.bricks[3].y = 1;
+        block.can_rotate  = true;
     }
     break;
     case 1:
     {
         /* Mirrored 'L':
                          (0, 1)
-            (-1, 0) (1, 0) (1, 1)
+            (1, -1) (1, 0) (1, 1)
         */
-        block->bricks[0].x = 0;
-        block->bricks[0].y = 1;
-        block->bricks[1].x = -1;
-        block->bricks[1].y = 0;
-        block->bricks[2].x = 1;
-        block->bricks[2].y = 0;
-        block->bricks[3].x = 1;
-        block->bricks[3].y = 1;
-        block->can_rotate  = true;
+        block.bricks[0].x = 0;
+        block.bricks[0].y = 1;
+        block.bricks[1].x = 1;
+        block.bricks[1].y = -1;
+        block.bricks[2].x = 1;
+        block.bricks[2].y = 0;
+        block.bricks[3].x = 1;
+        block.bricks[3].y = 1;
+        block.can_rotate  = true;
     }
     break;
     case 2:
@@ -105,15 +106,15 @@ void Block_new(Block* block)
         /* Let's draw the bar:
                 (0, -1) (0, 0) (0, 1) (0, 2)
         */
-        block->bricks[0].x = 0;
-        block->bricks[0].y = -1;
-        block->bricks[1].x = 0;
-        block->bricks[1].y = 0;
-        block->bricks[2].x = 0;
-        block->bricks[2].y = 1;
-        block->bricks[3].x = 0;
-        block->bricks[3].y = 2;
-        block->can_rotate  = true;
+        block.bricks[0].x = 0;
+        block.bricks[0].y = -1;
+        block.bricks[1].x = 0;
+        block.bricks[1].y = 0;
+        block.bricks[2].x = 0;
+        block.bricks[2].y = 1;
+        block.bricks[3].x = 0;
+        block.bricks[3].y = 2;
+        block.can_rotate  = true;
     }
     break;
     case 3:
@@ -123,15 +124,15 @@ void Block_new(Block* block)
              (0, 0) (0, 1)
                     (1, 1)
         */
-        block->bricks[0].x = -1;
-        block->bricks[0].y = 0;
-        block->bricks[1].x = 0;
-        block->bricks[1].y = 0;
-        block->bricks[2].x = 0;
-        block->bricks[2].y = 1;
-        block->bricks[3].x = 1;
-        block->bricks[3].y = 1;
-        block->can_rotate  = true;
+        block.bricks[0].x = -1;
+        block.bricks[0].y = 0;
+        block.bricks[1].x = 0;
+        block.bricks[1].y = 0;
+        block.bricks[2].x = 0;
+        block.bricks[2].y = 1;
+        block.bricks[3].x = 1;
+        block.bricks[3].y = 1;
+        block.can_rotate  = true;
     }
     break;
     case 4:
@@ -141,15 +142,15 @@ void Block_new(Block* block)
              (0, 0) (0, 1)
              (1, 0)
         */
-        block->bricks[0].x = -1;
-        block->bricks[0].y = 1;
-        block->bricks[1].x = 0;
-        block->bricks[1].y = 0;
-        block->bricks[2].x = 0;
-        block->bricks[2].y = 1;
-        block->bricks[3].x = 1;
-        block->bricks[3].y = 0;
-        block->can_rotate  = true;
+        block.bricks[0].x = -1;
+        block.bricks[0].y = 1;
+        block.bricks[1].x = 0;
+        block.bricks[1].y = 0;
+        block.bricks[2].x = 0;
+        block.bricks[2].y = 1;
+        block.bricks[3].x = 1;
+        block.bricks[3].y = 0;
+        block.can_rotate  = true;
     }
     break;
     case 5:
@@ -158,20 +159,21 @@ void Block_new(Block* block)
              (-1, 0) (-1, 1)
              (0, 0)   (0, 1)
         */
-        block->bricks[0].x = -1;
-        block->bricks[0].y = 0;
-        block->bricks[1].x = -1;
-        block->bricks[1].y = 1;
-        block->bricks[2].x = 0;
-        block->bricks[2].y = 0;
-        block->bricks[3].x = 0;
-        block->bricks[3].y = 1;
-        block->can_rotate  = false;
+        block.bricks[0].x = -1;
+        block.bricks[0].y = 0;
+        block.bricks[1].x = -1;
+        block.bricks[1].y = 1;
+        block.bricks[2].x = 0;
+        block.bricks[2].y = 0;
+        block.bricks[3].x = 0;
+        block.bricks[3].y = 1;
+        block.can_rotate  = false;
     }
     break;
     default:
         break;
     }
-    block->position.x = 2;
-    block->position.y = 4;
+    block.position.x = 2;
+    block.position.y = 4;
+    return block;
 }
