@@ -27,6 +27,36 @@ void print_block_to_buffer(Block* block, char* buffer, char symbol)
 
 void print_buffer(char* buffer) { fprintf(stdout, "%s\e[%dA\e[0E", buffer, ROWS); }
 
+void buffer_remove_row(char* buffer, u_int8_t start_row) {
+    for (u_int8_t row = start_row; row > 2; row--)
+    {
+        for (u_int8_t col = 1; col < COLS - 1; col++)
+        {
+            print_to_buffer_at(get_char_at(buffer, row - 1, col), row, col, buffer);
+        }
+       
+    }
+}
+
+
+void buffer_cleanup(char* buffer) {
+
+    for (u_int8_t row =  ROWS - 2; row > 2; row --) {
+        bool complete = true;
+        for (u_int8_t col = 1; col < COLS - 1; col ++) {
+            if (get_char_at(buffer, row, col) == ' ') {
+                complete = false;
+                continue;
+            }
+        }
+        if (complete) {
+            buffer_remove_row(buffer, row);
+            row ++;
+        }
+
+    }
+}
+
 void scene_update(char* buffer)
 {
     pthread_mutex_lock(&keyboard_lock);
@@ -144,7 +174,7 @@ int main()
                 print_block_to_buffer(&curr_block, buffer, '0');
                 Block_destroy(&curr_block);
                 Block_new(&curr_block);
-                
+                buffer_cleanup(buffer);
                 continue;
             }
             Block_move(&curr_block, DOWN);
