@@ -7,7 +7,15 @@
 #define PREVIEW_ROWS 3
 #define PREVIEW_COLS 4
 
-void Display_print_arena(Arena* arena_vec) { printf("\e[1m%s\e[%dA\e[0E\e[0m", arena_vec, ROWS); }
+void Display_print_arena(Arena* arena_vec)
+{
+    printf("\e[1m");
+    for (int i = 0; i < ROWS; i++)
+    {
+        printf("    %s\n", &arena_vec[i * COLS]);
+    }
+    printf("\e[0m\e[%dA\e[0E", ROWS + 1);
+}
 
 void Display_print_header(Block* next_block, uint8_t score)
 {

@@ -6,7 +6,7 @@
 #define COLS 11
 
 typedef char Arena;
-Arena arena_vec[ROWS * COLS + 1];
+Arena arena_vec[ROWS * COLS];
 void Arena_init(Arena*);
 char Arena_get_char_at(Arena*, int8_t, int8_t);
 void Arena_set_char_at(Arena*, char, int8_t, int8_t);

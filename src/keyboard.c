@@ -1,4 +1,5 @@
 #include "keyboard.h"
+#include "common.h"
 #include "logger.h"
 #include <stdio.h>
 #include <termios.h>
@@ -28,6 +29,7 @@ void Keyboard_init()
 void Keyboard_press(char c)
 {
     pthread_mutex_lock(&keyboard_lock);
+    LOG_DEBUG("Key %d pressed", c);
     switch (c)
     {
     case 'a':
@@ -52,7 +54,6 @@ void Keyboard_press(char c)
         key_pressed.key_esc = true;
         break;
     default:
-        LOG_DEBUG("Key %d ignored", c);
         break;
     }
     pthread_mutex_unlock(&keyboard_lock);

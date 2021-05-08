@@ -12,13 +12,13 @@ void Arena_init(Arena* arena_vec)
         // Right margin.
         arena_vec[row * COLS + COLS - 2] = '/';
         // EOL
-        arena_vec[row * COLS + COLS - 1] = '\n';
+        arena_vec[row * COLS + COLS - 1] = '\0';
     }
     for (int col = 0; col < COLS - 1; col++)
     {
         arena_vec[(ROWS - 1) * COLS + col] = '-';
     }
-    arena_vec[ROWS * COLS] = '\0';
+    arena_vec[ROWS * COLS - 1] = '\0';
 }
 
 char Arena_get_char_at(Arena* arena_vec, int8_t x, int8_t y)
@@ -50,7 +50,7 @@ void Arena_add_block(Arena* arena_vec, Block* block, char symbol)
 
 void Arena_remove_row(Arena* arena_vec, u_int8_t start_row)
 {
-    for (uint8_t row = start_row; row > 2; row--)
+    for (uint8_t row = start_row; row > 0; row--)
     {
         for (uint8_t col = 1; col < COLS - 1; col++)
         {
