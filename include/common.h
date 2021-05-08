@@ -4,7 +4,7 @@
 #include <string.h>
 
 #define TEST 0
-#define LOG_LEVEL 4
+#define LOG_LEVEL 5
 #define MEM_ANALYSIS 0
 
 #if TEST

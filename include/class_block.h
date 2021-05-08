@@ -1,7 +1,9 @@
-#ifndef BLOCK_H
-#define BLOCK_H
+#ifndef CLASS_BLOCK_H
+#define CLASS_BLOCK_H
 #include <stdbool.h>
 #include <stdlib.h>
+
+#define BLOCK_SIZE 4
 
 typedef enum
 {
@@ -13,16 +15,15 @@ typedef enum
     CCW,
 } Direction;
 
-typedef struct point
+typedef struct
 {
     int8_t x;
     int8_t y;
 } Point;
 
-typedef struct block
+typedef struct
 {
-    u_int8_t size;
-    Point* bricks;
+    Point bricks[BLOCK_SIZE];
     Point position;
     bool can_rotate;
 } Block;
@@ -30,5 +31,5 @@ typedef struct block
 void Block_move(Block*, Direction);
 void Block_rotate(Block*, Direction);
 void Block_new(Block*);
-void Block_destroy(Block*);
-#endif /* BLOCK_H */
+
+#endif /* CLASS_BLOCK_H */

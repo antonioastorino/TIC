@@ -3,7 +3,7 @@
 
 bool is_touchdown(char* buffer, Block* block)
 {
-    for (uint8_t i = 0; i < block->size; i++)
+    for (uint8_t i = 0; i < BLOCK_SIZE; i++)
     {
         if (get_char_at(buffer, block->bricks[i].x + block->position.x + 1,
                         block->bricks[i].y + block->position.y)
@@ -17,7 +17,7 @@ bool is_touchdown(char* buffer, Block* block)
 
 bool is_collision(char* buffer, Block* block)
 {
-    for (uint8_t i = 0; i < block->size; i++)
+    for (uint8_t i = 0; i < BLOCK_SIZE; i++)
     {
         if (get_char_at(buffer, block->bricks[i].x + block->position.x,
                         block->bricks[i].y + block->position.y)

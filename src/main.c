@@ -1,5 +1,6 @@
-#include "block.h"
+#include "class_block.h"
 #include "collision.h"
+#include "common.h"
 #include "display.h"
 #include "keyboard.h"
 #include "logger.h"
@@ -10,7 +11,6 @@
 #include <stdlib.h>
 #include <time.h>
 #include <unistd.h>
-#include "common.h"
 
 char buffer[ROWS * COLS + 1];
 bool g_run = true;
@@ -18,7 +18,7 @@ Block curr_block;
 
 void print_block_to_buffer(Block* block, char* buffer, char symbol)
 {
-    for (u_int8_t i = 0; i < block->size; i++)
+    for (u_int8_t i = 0; i < BLOCK_SIZE; i++)
     {
         print_to_buffer_at(symbol, block->bricks[i].x + block->position.x,
                            block->bricks[i].y + block->position.y, buffer);
@@ -27,38 +27,42 @@ void print_block_to_buffer(Block* block, char* buffer, char symbol)
 
 void print_buffer(char* buffer) { fprintf(stdout, "%s\e[%dA\e[0E", buffer, ROWS); }
 
-void buffer_remove_row(char* buffer, u_int8_t start_row) {
-    for (u_int8_t row = start_row; row > 2; row--)
+void buffer_remove_row(char* buffer, u_int8_t start_row)
+{
+    for (uint8_t row = start_row; row > 2; row--)
     {
-        for (u_int8_t col = 1; col < COLS - 1; col++)
+        for (uint8_t col = 1; col < COLS - 1; col++)
         {
             print_to_buffer_at(get_char_at(buffer, row - 1, col), row, col, buffer);
         }
-       
     }
 }
 
+void buffer_cleanup(char* buffer)
+{
 
-void buffer_cleanup(char* buffer) {
-
-    for (u_int8_t row =  ROWS - 2; row > 2; row --) {
+    for (uint8_t row = ROWS - 2; row > 2; row--)
+    {
         bool complete = true;
-        for (u_int8_t col = 1; col < COLS - 1; col ++) {
-            if (get_char_at(buffer, row, col) == ' ') {
+        for (uint8_t col = 1; col < COLS - 1; col++)
+        {
+            if (get_char_at(buffer, row, col) == ' ')
+            {
                 complete = false;
                 continue;
             }
         }
-        if (complete) {
+        if (complete)
+        {
             buffer_remove_row(buffer, row);
-            row ++;
+            row++;
         }
-
     }
 }
 
-void scene_update(char* buffer)
+void scene_update(char* buffer, uint8_t score)
 {
+    printf("\e[1ASCORE: %u\n", score);
     pthread_mutex_lock(&keyboard_lock);
     if (key_pressed.key_esc)
     {
@@ -159,10 +163,10 @@ int main()
     Block_new(&curr_block);
 
     int frame_count = 0;
-    printf("Log level: %d\n", LOG_LEVEL);
+    uint8_t score   = 0;
     while (g_run)
     {
-        scene_update(buffer);
+        scene_update(buffer, score);
         usleep(10000);
 
         // Block_rotate(&curr_block, CCW);
@@ -172,7 +176,6 @@ int main()
             if (is_touchdown(buffer, &curr_block))
             {
                 print_block_to_buffer(&curr_block, buffer, '0');
-                Block_destroy(&curr_block);
                 Block_new(&curr_block);
                 buffer_cleanup(buffer);
                 continue;

@@ -1,6 +1,6 @@
 #ifndef COLLISION_H
 #define COLLISION_H
-#include "block.h"
+#include "class_block.h"
 #include <stdbool.h>
 
 bool is_touchdown(char*, Block*);
