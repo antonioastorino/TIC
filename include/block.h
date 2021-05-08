@@ -15,8 +15,8 @@ typedef struct block
     Point position;
 } Block;
 
-void move_down(Block*);
-void rotate(Block* , int8_t);
-void generate_block(Block *, int8_t);
-
+void Block_move_down(Block*);
+void Block_rotate(Block*, int8_t);
+void Block_new(Block*, int8_t);
+void Block_destroy(Block*);
 #endif /* BLOCK_H */

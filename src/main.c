@@ -5,27 +5,18 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #include <unistd.h>
+#include "display.h"
+#include "collision.h"
 
-#define ROWS 30
-#define COLS 20
 #define CW 1
 #define CCW -1
 
 char buffer[ROWS * COLS + 1];
 bool g_run = true;
 
-void print_to_buffer_at(char c, int8_t x, int8_t y, char* buffer)
-{
-    if (x < ROWS && y < COLS)
-    {
-        buffer[x * COLS + y] = c;
-    }
-    else
-    {
-        exit(1);
-    }
-}
+
 
 void print_block_to_buffer(Block* block, char* buffer, char symbol)
 {
@@ -36,7 +27,7 @@ void print_block_to_buffer(Block* block, char* buffer, char symbol)
     }
 }
 
-void print_buffer(char* buffer) { fprintf(stdout, "%s\e[%dA", buffer, ROWS); }
+void print_buffer(char* buffer) { fprintf(stdout, "%s\e[%dA\e[0E", buffer, ROWS); }
 
 void execute(char c)
 {
@@ -61,25 +52,35 @@ int main()
     void* fn = Keyboard_listen;
     pthread_create(&keyboard_t, NULL, fn, execute);
     Block curr_block;
-    generate_block(&curr_block, 0);
 
     memset(&buffer, ' ', ROWS * COLS);
     // Set all the EOL
-    for (int row = 0; row < ROWS; row++)
+    for (int row = 0; row < ROWS - 1; row++)
     {
+        buffer[row * COLS] = 48 + (row % 10);
+        buffer[row * COLS + COLS - 2] = '/';
         buffer[row * COLS + COLS - 1] = '\n';
     }
+    for (int col = 0; col < COLS -1; col ++) {
+        buffer[(ROWS - 1) * COLS + col] = '-'; 
+    }
     buffer[ROWS * COLS] = '\0';
-
-    for (int count = 0; count < 10 && g_run == true; count++)
+    Block_new(&curr_block, 0);
+    while (g_run)
     {
         print_block_to_buffer(&curr_block, buffer, '#');
         print_buffer(buffer);
-        sleep(1);
+        usleep(100000);
         print_block_to_buffer(&curr_block, buffer, ' ');
-        // print_buffer(buffer);
-        move_down(&curr_block);
-        rotate(&curr_block, CCW);
+        if (is_touchdown(buffer, &curr_block))
+        {
+            print_block_to_buffer(&curr_block, buffer, '#');
+            Block_destroy(&curr_block);
+            Block_new(&curr_block, 1);
+            continue;
+        }
+        Block_move_down(&curr_block);
+        // Block_rotate(&curr_block, CCW);
     }
 
     pthread_join(keyboard_t, NULL);
