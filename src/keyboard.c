@@ -1,6 +1,6 @@
 #include "keyboard.h"
-#include <termios.h>
 #include <stdio.h>
+#include <termios.h>
 #include <unistd.h>
 
 struct termios initial_settings;
@@ -16,7 +16,7 @@ void Keyboard_init()
     initial_settings = settings;
 
     settings.c_lflag &= ~ICANON;
-    settings.c_lflag &= ~ECHO;
+    settings.c_lflag &= ~ECHO; // Don't print what I type
     settings.c_lflag &= ~ISIG;
     settings.c_cc[VMIN]  = 1;
     settings.c_cc[VTIME] = 0;
@@ -24,18 +24,50 @@ void Keyboard_init()
     tcsetattr(0, TCSANOW, &settings);
 }
 
-void Keyboard_listen(void (*execute)(char))
+void Keyboard_press(char c)
 {
+    pthread_mutex_lock(&keyboard_lock);
+    switch (c)
+    {
+    case 'a':
+        key_pressed.key_a = true;
+        break;
+    case 'd':
+        key_pressed.key_d = true;
+        break;
+    case 's':
+        key_pressed.key_s = true;
+        break;
+    case 27:
+        key_pressed.key_esc = true;
+        break;
+    default:
+        break;
+    }
+    pthread_mutex_unlock(&keyboard_lock);
+}
+
+void Keyboard_listen()
+{
+    Keyboard_release_all();
     while (1)
     {
-        int n = getchar();
-        execute(n);
-        if (n == 27) /* Escape key pressed */
-        {
+        int c = getchar();
+        Keyboard_press(c);
+        if (c == 27) {
             break;
         }
-        usleep(10000);
     }
+}
+
+void Keyboard_release_all()
+{
+    pthread_mutex_lock(&keyboard_lock);
+    key_pressed.key_a   = false;
+    key_pressed.key_d   = false;
+    key_pressed.key_s   = false;
+    key_pressed.key_esc = false;
+    pthread_mutex_unlock(&keyboard_lock);
 }
 
 void Keyboard_reset() { tcsetattr(0, TCSANOW, &initial_settings); }
