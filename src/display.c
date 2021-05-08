@@ -4,18 +4,19 @@
 #include "logger.h"
 #include <stdio.h>
 #include <unistd.h>
+#define PREVIEW_ROWS 3
+#define PREVIEW_COLS 4
 
-void Display_print_arena(Arena* arena_vec) { fprintf(stdout, "%s\e[%dA\e[0E", arena_vec, ROWS); }
+void Display_print_arena(Arena* arena_vec) { printf("\e[1m%s\e[%dA\e[0E\e[0m", arena_vec, ROWS); }
 
-bool Display_update(Arena* buffer, Block* curr_block, Block* next_block, uint8_t score)
+void Display_print_header(Block* next_block, uint8_t score)
 {
-
-    char preview_buf[3][4];
-    printf("\e[4A");
+    char preview_buf[PREVIEW_ROWS][PREVIEW_COLS];
+    printf("\e[4A\e[7C");
     memset(&preview_buf, ' ', sizeof(preview_buf));
     for (int i = 0; i < BLOCK_SIZE; i++)
     {
-        preview_buf[next_block->bricks[i].x + 1][next_block->bricks[i].y + 1] = 'Y';
+        preview_buf[next_block->bricks[i].x + 1][next_block->bricks[i].y + 1] = 'X';
     }
     for (int row = 0; row < 3; row++)
     {
@@ -23,10 +24,14 @@ bool Display_update(Arena* buffer, Block* curr_block, Block* next_block, uint8_t
         {
             printf("%c", preview_buf[row][col]);
         }
-        printf("\n");
+        printf("\n\e[7C");
     }
+    printf("\e[3F NEXT:\e[3E");
+    printf(" SCORE: %u\n", score);
+}
 
-    printf("SCORE: %u\n", score);
+bool Display_update_arena(Arena* buffer, Block* curr_block)
+{
     pthread_mutex_lock(&keyboard_lock);
     if (key_pressed.key_esc)
     {

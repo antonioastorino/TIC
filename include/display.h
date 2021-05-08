@@ -1,10 +1,11 @@
 #ifndef DISPLAY_H
 #define DISPLAY_H
-#include <stdlib.h>
 #include "class_arena.h"
 #include "class_block.h"
 #include <stdbool.h>
+#include <stdlib.h>
 
 void Display_print_arena(Arena*);
-bool Display_update(Arena*, Block*, Block*, uint8_t);
+bool Display_update_arena(Arena*, Block*);
+void Display_print_header(Block*, uint8_t);
 #endif /* DISPLAY_H */

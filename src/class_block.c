@@ -70,16 +70,16 @@ Block Block_new()
     case 0:
     {
         /* 'L':
+                (-1, -1) (-1, 0) (-1, 1)
                 (0, -1)
-                (1, -1) (1, 0) (1, 1)
         */
         block.bricks[0].x = 0;
         block.bricks[0].y = -1;
-        block.bricks[1].x = 1;
+        block.bricks[1].x = -1;
         block.bricks[1].y = -1;
-        block.bricks[2].x = 1;
+        block.bricks[2].x = -1;
         block.bricks[2].y = 0;
-        block.bricks[3].x = 1;
+        block.bricks[3].x = -1;
         block.bricks[3].y = 1;
         block.can_rotate  = true;
     }
@@ -87,16 +87,16 @@ Block Block_new()
     case 1:
     {
         /* Mirrored 'L':
-                         (0, 1)
-            (1, -1) (1, 0) (1, 1)
+            (-1, -1) (-1, 0) (-1, 1)
+                             (0, 1)
         */
         block.bricks[0].x = 0;
         block.bricks[0].y = 1;
-        block.bricks[1].x = 1;
+        block.bricks[1].x = -1;
         block.bricks[1].y = -1;
-        block.bricks[2].x = 1;
+        block.bricks[2].x = -1;
         block.bricks[2].y = 0;
-        block.bricks[3].x = 1;
+        block.bricks[3].x = -1;
         block.bricks[3].y = 1;
         block.can_rotate  = true;
     }
