@@ -44,9 +44,9 @@ void Arena_add_tetromino(Arena* arena_vec, Tetromino* tetromino, char symbol)
     }
 }
 
-void Arena_remove_row(Arena* arena_vec, uint8_t start_row)
+void Arena_remove_row(Arena* arena_vec, uint8_t complete_row)
 {
-    for (uint8_t row = start_row; row > 0; row--)
+    for (uint8_t row = complete_row; row > 0; row--)
     {
         for (uint8_t col = 1; col < COLS - 1; col++)
         {
@@ -55,7 +55,7 @@ void Arena_remove_row(Arena* arena_vec, uint8_t start_row)
     }
 }
 
-int Arena_cleanup_and_get_points(Arena* arena_vec, uint8_t* complete_row)
+int Arena_cleanup_and_get_points(Arena* arena_vec, uint8_t* complete_row_vec)
 {
     int complete_row_counter = 0;
     for (uint8_t row = 3; row < ROWS - 1; row++)
@@ -70,8 +70,8 @@ int Arena_cleanup_and_get_points(Arena* arena_vec, uint8_t* complete_row)
             }
         }
         if (complete)
-        { // Save the last completed row (with hightest index);
-            *complete_row = row;
+        { // Save the row number of the current row;
+            complete_row_vec[complete_row_counter] = row;
             complete_row_counter++;
         }
     }

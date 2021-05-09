@@ -43,8 +43,8 @@ int main()
 
         if (frame_count++ >= 100)
         {
-            frame_count               = 0;
-            uint8_t last_complete_row = 0;
+            frame_count                = 0;
+            uint8_t complete_row_vec[4] = {0};
             if (is_touchdown(arena_vec, &curr_tetromino))
             {
                 Arena_add_tetromino(arena_vec, &curr_tetromino, '0');
@@ -52,15 +52,17 @@ int main()
                 next_tetromino = Tetromino_new();
 
                 int num_of_complete_rows
-                    = Arena_cleanup_and_get_points(arena_vec, &last_complete_row);
+                    = Arena_cleanup_and_get_points(arena_vec, complete_row_vec);
                 score += num_of_complete_rows * num_of_complete_rows;
                 for (uint8_t i = 0; i < num_of_complete_rows; i++)
                 {
-                    Display_color_arena_row(arena_vec, last_complete_row - i);
+                    Display_color_arena_row(arena_vec, complete_row_vec[i]);
                 }
                 for (uint8_t i = 0; i < num_of_complete_rows; i++)
                 {
-                    Arena_remove_row(arena_vec, last_complete_row);
+                    // Remove rows from the top to the bottom so that the nex row to be removed is
+                    // not shifted and its index is still valid.
+                    Arena_remove_row(arena_vec, complete_row_vec[i]);
                 }
                 Display_print_header(&next_tetromino, score);
                 if (is_touchdown(arena_vec, &curr_tetromino))
