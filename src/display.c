@@ -17,14 +17,14 @@ void Display_print_arena(Arena* arena_vec)
     printf("\e[0m\e[%dA\e[0E", ROWS + 1);
 }
 
-void Display_print_header(Block* next_block, uint8_t score)
+void Display_print_header(Tetromino* next_tetromino, uint8_t score)
 {
     char preview_buf[PREVIEW_ROWS][PREVIEW_COLS];
     printf("\e[4A\e[7C");
     memset(&preview_buf, ' ', sizeof(preview_buf));
     for (int i = 0; i < BLOCK_SIZE; i++)
     {
-        preview_buf[next_block->bricks[i].x + 1][next_block->bricks[i].y + 1] = 'X';
+        preview_buf[next_tetromino->bricks[i].x + 1][next_tetromino->bricks[i].y + 1] = 'X';
     }
     for (int row = 0; row < 3; row++)
     {
@@ -38,7 +38,7 @@ void Display_print_header(Block* next_block, uint8_t score)
     printf(" SCORE: %u\n", score);
 }
 
-bool Display_update_arena(Arena* buffer, Block* curr_block)
+bool Display_update_arena(Arena* buffer, Tetromino* curr_tetromino)
 {
     pthread_mutex_lock(&keyboard_lock);
     if (key_pressed.key_esc)
@@ -47,62 +47,62 @@ bool Display_update_arena(Arena* buffer, Block* curr_block)
     }
     if (key_pressed.key_a)
     {
-        Block_move(curr_block, LEFT);
-        if (is_collision(buffer, curr_block))
+        Tetromino_move(curr_tetromino, LEFT);
+        if (is_collision(buffer, curr_tetromino))
         {
-            Block_move(curr_block, RIGHT);
+            Tetromino_move(curr_tetromino, RIGHT);
         }
     }
     else if (key_pressed.key_d)
     {
-        Block_move(curr_block, RIGHT);
-        if (is_collision(buffer, curr_block))
+        Tetromino_move(curr_tetromino, RIGHT);
+        if (is_collision(buffer, curr_tetromino))
         {
-            Block_move(curr_block, LEFT);
+            Tetromino_move(curr_tetromino, LEFT);
         }
     }
     if (key_pressed.key_s)
     {
-        Block_move(curr_block, DOWN);
-        if (is_collision(buffer, curr_block))
+        Tetromino_move(curr_tetromino, DOWN);
+        if (is_collision(buffer, curr_tetromino))
         {
-            Block_move(curr_block, UP);
+            Tetromino_move(curr_tetromino, UP);
         }
     }
     if (key_pressed.key_space)
     {
-        while (!is_touchdown(buffer, curr_block))
+        while (!is_touchdown(buffer, curr_tetromino))
         {
-            Block_move(curr_block, DOWN);
+            Tetromino_move(curr_tetromino, DOWN);
             usleep(5000);
-            Arena_add_block(buffer, curr_block, '#');
+            Arena_add_tetromino(buffer, curr_tetromino, '#');
             Display_print_arena(buffer);
-            // Remove block from the buffer after printing it.
-            Arena_add_block(buffer, curr_block, ' ');
+            // Remove tetromino from the buffer after printing it.
+            Arena_add_tetromino(buffer, curr_tetromino, ' ');
         }
     }
     if (key_pressed.key_j)
     {
-        Block_rotate(curr_block, CCW);
-        if (is_collision(buffer, curr_block))
+        Tetromino_rotate(curr_tetromino, CCW);
+        if (is_collision(buffer, curr_tetromino))
         {
-            Block_rotate(curr_block, CW);
+            Tetromino_rotate(curr_tetromino, CW);
         }
     }
     if (key_pressed.key_l)
     {
-        Block_rotate(curr_block, CW);
-        if (is_collision(buffer, curr_block))
+        Tetromino_rotate(curr_tetromino, CW);
+        if (is_collision(buffer, curr_tetromino))
         {
-            Block_rotate(curr_block, CCW);
+            Tetromino_rotate(curr_tetromino, CCW);
         }
     }
     pthread_mutex_unlock(&keyboard_lock);
     Keyboard_release_all();
-    Arena_add_block(buffer, curr_block, '#');
+    Arena_add_tetromino(buffer, curr_tetromino, '#');
     Display_print_arena(buffer);
-    // Remove block from the buffer after printing it to avoid self collisions.
-    Arena_add_block(buffer, curr_block, ' ');
+    // Remove tetromino from the buffer after printing it to avoid self collisions.
+    Arena_add_tetromino(buffer, curr_tetromino, ' ');
     return true;
 }
 

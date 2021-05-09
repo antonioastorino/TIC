@@ -35,12 +35,12 @@ void Arena_set_char_at(Arena* arena_vec, char c, int8_t x, int8_t y)
     }
 }
 
-void Arena_add_block(Arena* arena_vec, Block* block, char symbol)
+void Arena_add_tetromino(Arena* arena_vec, Tetromino* tetromino, char symbol)
 {
     for (u_int8_t i = 0; i < BLOCK_SIZE; i++)
     {
-        Arena_set_char_at(arena_vec, symbol, block->bricks[i].x + block->position.x,
-                          block->bricks[i].y + block->position.y);
+        Arena_set_char_at(arena_vec, symbol, tetromino->bricks[i].x + tetromino->position.x,
+                          tetromino->bricks[i].y + tetromino->position.y);
     }
 }
 
@@ -58,7 +58,7 @@ void Arena_remove_row(Arena* arena_vec, uint8_t start_row)
 int Arena_cleanup_and_get_points(Arena* arena_vec, uint8_t* complete_row)
 {
     int complete_row_counter = 0;
-    for (uint8_t row = 3; row < ROWS -1; row++)
+    for (uint8_t row = 3; row < ROWS - 1; row++)
     {
         bool complete = true;
         for (uint8_t col = 1; col < COLS - 1; col++)

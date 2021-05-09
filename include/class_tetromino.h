@@ -26,10 +26,10 @@ typedef struct
     Point bricks[BLOCK_SIZE];
     Point position;
     bool can_rotate;
-} Block;
+} Tetromino;
 
-void Block_move(Block*, Direction);
-void Block_rotate(Block*, Direction);
-Block Block_new();
+void Tetromino_move(Tetromino*, Direction);
+void Tetromino_rotate(Tetromino*, Direction);
+Tetromino Tetromino_new();
 
 #endif /* CLASS_BLOCK_H */

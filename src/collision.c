@@ -2,12 +2,12 @@
 #include "class_arena.h"
 #include "display.h"
 
-bool is_touchdown(Arena* arena_vec, Block* block)
+bool is_touchdown(Arena* arena_vec, Tetromino* tetromino)
 {
     for (uint8_t i = 0; i < BLOCK_SIZE; i++)
     {
-        if (Arena_get_char_at(arena_vec, block->bricks[i].x + block->position.x + 1,
-                              block->bricks[i].y + block->position.y)
+        if (Arena_get_char_at(arena_vec, tetromino->bricks[i].x + tetromino->position.x + 1,
+                              tetromino->bricks[i].y + tetromino->position.y)
             != ' ')
         {
             return true;
@@ -16,12 +16,12 @@ bool is_touchdown(Arena* arena_vec, Block* block)
     return false;
 }
 
-bool is_collision(Arena* arena_vec, Block* block)
+bool is_collision(Arena* arena_vec, Tetromino* tetromino)
 {
     for (uint8_t i = 0; i < BLOCK_SIZE; i++)
     {
-        if (Arena_get_char_at(arena_vec, block->bricks[i].x + block->position.x,
-                              block->bricks[i].y + block->position.y)
+        if (Arena_get_char_at(arena_vec, tetromino->bricks[i].x + tetromino->position.x,
+                              tetromino->bricks[i].y + tetromino->position.y)
             != ' ')
         {
             return true;

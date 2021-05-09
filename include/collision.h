@@ -1,9 +1,9 @@
 #ifndef COLLISION_H
 #define COLLISION_H
-#include "class_block.h"
+#include "class_tetromino.h"
 #include <stdbool.h>
 
-bool is_touchdown(char*, Block*);
-bool is_collision(char*, Block*);
+bool is_touchdown(char*, Tetromino*);
+bool is_collision(char*, Tetromino*);
 
 #endif /* COLLISION_H */

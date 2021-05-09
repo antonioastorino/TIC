@@ -1,5 +1,5 @@
 #include "class_arena.h"
-#include "class_block.h"
+#include "class_tetromino.h"
 #include "collision.h"
 #include "display.h"
 #include "keyboard.h"
@@ -29,29 +29,30 @@ int main()
     pthread_create(&keyboard_t, NULL, fn, NULL);
 
     srand(time(0));
-    Block curr_block = Block_new();
-    Block next_block = Block_new();
+    Tetromino curr_tetromino = Tetromino_new();
+    Tetromino next_tetromino = Tetromino_new();
 
     int frame_count = 0;
     uint8_t score   = 0;
-    Display_print_header(&next_block, score);
+    Display_print_header(&next_tetromino, score);
     bool run = true;
     while (run)
     {
-        run = Display_update_arena(arena_vec, &curr_block);
+        run = Display_update_arena(arena_vec, &curr_tetromino);
         usleep(10000);
 
         if (frame_count++ >= 100)
         {
-            frame_count                 = 0;
+            frame_count               = 0;
             uint8_t last_complete_row = 0;
-            if (is_touchdown(arena_vec, &curr_block))
+            if (is_touchdown(arena_vec, &curr_tetromino))
             {
-                Arena_add_block(arena_vec, &curr_block, '0');
-                curr_block = next_block;
-                next_block = Block_new();
+                Arena_add_tetromino(arena_vec, &curr_tetromino, '0');
+                curr_tetromino = next_tetromino;
+                next_tetromino = Tetromino_new();
 
-                int num_of_complete_rows = Arena_cleanup_and_get_points(arena_vec, &last_complete_row);
+                int num_of_complete_rows
+                    = Arena_cleanup_and_get_points(arena_vec, &last_complete_row);
                 score += num_of_complete_rows * num_of_complete_rows;
                 for (uint8_t i = 0; i < num_of_complete_rows; i++)
                 {
@@ -61,15 +62,15 @@ int main()
                 {
                     Arena_remove_row(arena_vec, last_complete_row);
                 }
-                Display_print_header(&next_block, score);
-                if (is_touchdown(arena_vec, &curr_block))
+                Display_print_header(&next_tetromino, score);
+                if (is_touchdown(arena_vec, &curr_tetromino))
                 {
                     printf("\e[33mGAME OVER\e[0m - PRESS ESC TO QUIT\n");
                     break;
                 }
                 continue;
             }
-            Block_move(&curr_block, DOWN);
+            Tetromino_move(&curr_tetromino, DOWN);
         }
     }
 
