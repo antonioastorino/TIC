@@ -23,7 +23,7 @@ void Display_print_header(Tetromino* next_tetromino, uint64_t score, uint16_t cu
     printf("  \e[K\e[32m LEVEL: %hu\n", (uint16_t)(curr_level + 1));
     printf("  \e[K SCORE: %llu\e[0m\n\n", score);
     char preview_buf[PREVIEW_ROWS][PREVIEW_COLS];
-    printf("\e[10C");
+    printf("\e[8C");
     memset(&preview_buf, ' ', sizeof(preview_buf));
     for (int i = 0; i < BLOCK_SIZE; i++)
     {
@@ -35,7 +35,7 @@ void Display_print_header(Tetromino* next_tetromino, uint64_t score, uint16_t cu
         {
             printf("%c", preview_buf[row][col]);
         }
-        printf("\n\e[10C");
+        printf("\n\e[8C");
     }
     // Go up and print "NEXT", then go down again.
     printf("\e[3F NEXT:\e[3E\n");
