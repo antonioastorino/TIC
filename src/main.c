@@ -37,7 +37,7 @@ int main()
     uint16_t level_score                 = 0;
     uint16_t gravity_rate                = 1000;
     uint16_t curr_level                  = 0;
-    const uint16_t level_score_threshold = 5;
+    const uint16_t level_score_threshold = 50;
     Display_print_header(&next_tetromino, score, curr_level);
     bool run = true;
     while (run)

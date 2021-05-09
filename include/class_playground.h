@@ -2,7 +2,7 @@
 #define CLASS_ARENA_H
 #include "class_tetromino.h"
 #include <stdlib.h>
-#define ROWS 20
+#define ROWS 25
 #define COLS 13 // left border + 10 + right border + null char
 
 typedef char Playground;
