@@ -1,5 +1,6 @@
 #include "class_arena.h"
 #include <memory.h>
+// #include <stdio.h>
 
 void Arena_init(Arena* arena_vec)
 {
@@ -43,7 +44,7 @@ void Arena_add_block(Arena* arena_vec, Block* block, char symbol)
     }
 }
 
-void Arena_remove_row(Arena* arena_vec, u_int8_t start_row)
+void Arena_remove_row(Arena* arena_vec, uint8_t start_row)
 {
     for (uint8_t row = start_row; row > 0; row--)
     {
@@ -54,11 +55,10 @@ void Arena_remove_row(Arena* arena_vec, u_int8_t start_row)
     }
 }
 
-int Arena_cleanup_and_get_points(Arena* arena_vec)
+int Arena_cleanup_and_get_points(Arena* arena_vec, uint8_t* complete_row)
 {
-
-    int points = 0;
-    for (uint8_t row = ROWS - 2; row > 2; row--)
+    int complete_row_counter = 0;
+    for (uint8_t row = 3; row < ROWS -1; row++)
     {
         bool complete = true;
         for (uint8_t col = 1; col < COLS - 1; col++)
@@ -70,11 +70,10 @@ int Arena_cleanup_and_get_points(Arena* arena_vec)
             }
         }
         if (complete)
-        {
-            Arena_remove_row(arena_vec, row);
-            row++;
-            points++;
+        { // Save the last completed row (with hightest index);
+            *complete_row = row;
+            complete_row_counter++;
         }
     }
-    return points;
+    return complete_row_counter;
 }

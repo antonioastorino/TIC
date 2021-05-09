@@ -43,13 +43,24 @@ int main()
 
         if (frame_count++ >= 100)
         {
-            frame_count = 0;
+            frame_count                 = 0;
+            uint8_t last_complete_row = 0;
             if (is_touchdown(arena_vec, &curr_block))
             {
                 Arena_add_block(arena_vec, &curr_block, '0');
                 curr_block = next_block;
                 next_block = Block_new();
-                score += Arena_cleanup_and_get_points(arena_vec);
+
+                int num_of_complete_rows = Arena_cleanup_and_get_points(arena_vec, &last_complete_row);
+                score += num_of_complete_rows * num_of_complete_rows;
+                for (uint8_t i = 0; i < num_of_complete_rows; i++)
+                {
+                    Display_color_arena_row(arena_vec, last_complete_row - i);
+                }
+                for (uint8_t i = 0; i < num_of_complete_rows; i++)
+                {
+                    Arena_remove_row(arena_vec, last_complete_row);
+                }
                 Display_print_header(&next_block, score);
                 if (is_touchdown(arena_vec, &curr_block))
                 {

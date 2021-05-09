@@ -101,7 +101,18 @@ bool Display_update_arena(Arena* buffer, Block* curr_block)
     Keyboard_release_all();
     Arena_add_block(buffer, curr_block, '#');
     Display_print_arena(buffer);
-    // Remove block from the buffer after printing it.
+    // Remove block from the buffer after printing it to avoid self collisions.
     Arena_add_block(buffer, curr_block, ' ');
     return true;
+}
+
+void Display_color_arena_row(Arena* arena_vec, uint8_t row)
+{
+    // Move from the arena top to `row`.
+    printf("\e[1m\e[%dE\e[34m", row);
+    // Print the row.
+    printf("    %s\n", &arena_vec[row * COLS]);
+    // Go back to the arena top.
+    printf("\e[0m\e[%dA", row + 1);
+    usleep(50000);
 }

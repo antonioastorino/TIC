@@ -11,6 +11,7 @@ void Arena_init(Arena*);
 char Arena_get_char_at(Arena*, int8_t, int8_t);
 void Arena_set_char_at(Arena*, char, int8_t, int8_t);
 void Arena_add_block(Arena*, Block*, char);
-int Arena_cleanup_and_get_points(Arena*);
+void Arena_remove_row(Arena*, uint8_t);
+int Arena_cleanup_and_get_points(Arena*, uint8_t*);
 
 #endif /* CLASS_ARENA_H */
