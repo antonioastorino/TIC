@@ -7,20 +7,23 @@
 #define PREVIEW_ROWS 3
 #define PREVIEW_COLS 4
 
-void Display_print_arena(Arena* arena_vec)
+void Display_print_playground(Playground* playground_vec)
 {
     printf("\e[1m");
     for (int i = 0; i < ROWS; i++)
     {
-        printf("    %s\n", &arena_vec[i * COLS]);
+        printf("    %s\n", &playground_vec[i * COLS]);
     }
     printf("\e[0m\e[%dA\e[0E", ROWS + 1);
 }
 
-void Display_print_header(Tetromino* next_tetromino, uint8_t score)
+void Display_print_header(Tetromino* next_tetromino, uint64_t score, uint16_t curr_level)
 {
+    printf("\e[7F"); // Go to the top of the header
+    printf("  \e[K\e[32m LEVEL: %hu\n", (uint16_t)(curr_level + 1));
+    printf("  \e[K SCORE: %llu\e[0m\n\n", score);
     char preview_buf[PREVIEW_ROWS][PREVIEW_COLS];
-    printf("\e[4A\e[7C");
+    printf("\e[10C");
     memset(&preview_buf, ' ', sizeof(preview_buf));
     for (int i = 0; i < BLOCK_SIZE; i++)
     {
@@ -32,13 +35,13 @@ void Display_print_header(Tetromino* next_tetromino, uint8_t score)
         {
             printf("%c", preview_buf[row][col]);
         }
-        printf("\n\e[7C");
+        printf("\n\e[10C");
     }
-    printf("\e[3F NEXT:\e[3E");
-    printf(" SCORE: %u\n", score);
+    // Go up and print "NEXT", then go down again.
+    printf("\e[3F NEXT:\e[3E\n");
 }
 
-bool Display_update_arena(Arena* buffer, Tetromino* curr_tetromino)
+bool Display_update_playground(Playground* buffer, Tetromino* curr_tetromino)
 {
     pthread_mutex_lock(&keyboard_lock);
     if (key_pressed.key_esc)
@@ -75,10 +78,10 @@ bool Display_update_arena(Arena* buffer, Tetromino* curr_tetromino)
         {
             Tetromino_move(curr_tetromino, DOWN);
             usleep(5000);
-            Arena_add_tetromino(buffer, curr_tetromino, '#');
-            Display_print_arena(buffer);
+            Playground_add_tetromino(buffer, curr_tetromino, '#');
+            Display_print_playground(buffer);
             // Remove tetromino from the buffer after printing it.
-            Arena_add_tetromino(buffer, curr_tetromino, ' ');
+            Playground_add_tetromino(buffer, curr_tetromino, ' ');
         }
     }
     if (key_pressed.key_j)
@@ -99,20 +102,20 @@ bool Display_update_arena(Arena* buffer, Tetromino* curr_tetromino)
     }
     pthread_mutex_unlock(&keyboard_lock);
     Keyboard_release_all();
-    Arena_add_tetromino(buffer, curr_tetromino, '#');
-    Display_print_arena(buffer);
+    Playground_add_tetromino(buffer, curr_tetromino, '#');
+    Display_print_playground(buffer);
     // Remove tetromino from the buffer after printing it to avoid self collisions.
-    Arena_add_tetromino(buffer, curr_tetromino, ' ');
+    Playground_add_tetromino(buffer, curr_tetromino, ' ');
     return true;
 }
 
-void Display_color_arena_row(Arena* arena_vec, uint8_t row)
+void Display_color_playground_row(Playground* playground_vec, uint8_t row)
 {
-    // Move from the arena top to `row`.
+    // Move from the playground top to `row`.
     printf("\e[1m\e[%dE\e[34m", row);
     // Print the row.
-    printf("    %s\n", &arena_vec[row * COLS]);
-    // Go back to the arena top.
+    printf("    %s\n", &playground_vec[row * COLS]);
+    // Go back to the playground top.
     printf("\e[0m\e[%dA", row + 1);
-    usleep(50000);
+    usleep(80000);
 }

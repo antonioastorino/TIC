@@ -1,4 +1,4 @@
-#include "class_arena.h"
+#include "class_playground.h"
 #include "class_tetromino.h"
 #include "collision.h"
 #include "display.h"
@@ -23,7 +23,7 @@ int main()
     // Clear screen and make cursor invisible.
     printf("\e[2J\e[?25l");
     Keyboard_init();
-    Arena_init(arena_vec);
+    Playground_init(playground_vec);
     pthread_t keyboard_t;
     void* fn = Keyboard_listen;
     pthread_create(&keyboard_t, NULL, fn, NULL);
@@ -32,43 +32,58 @@ int main()
     Tetromino curr_tetromino = Tetromino_new();
     Tetromino next_tetromino = Tetromino_new();
 
-    int frame_count = 0;
-    uint8_t score   = 0;
-    Display_print_header(&next_tetromino, score);
+    uint16_t frame_count                 = 0;
+    uint64_t score                       = 0;
+    uint16_t level_score                 = 0;
+    uint16_t gravity_rate                = 1000;
+    uint16_t curr_level                  = 0;
+    const uint16_t level_score_threshold = 5;
+    Display_print_header(&next_tetromino, score, curr_level);
     bool run = true;
     while (run)
     {
-        run = Display_update_arena(arena_vec, &curr_tetromino);
-        usleep(10000);
+        run = Display_update_playground(playground_vec, &curr_tetromino);
+        usleep(1000);
 
-        if (frame_count++ >= 100)
+        if (frame_count++ >= gravity_rate)
         {
-            frame_count                = 0;
+            frame_count                 = 0;
             uint8_t complete_row_vec[4] = {0};
-            if (is_touchdown(arena_vec, &curr_tetromino))
+            if (is_touchdown(playground_vec, &curr_tetromino))
             {
-                Arena_add_tetromino(arena_vec, &curr_tetromino, '0');
+                Playground_add_tetromino(playground_vec, &curr_tetromino, '0');
                 curr_tetromino = next_tetromino;
                 next_tetromino = Tetromino_new();
 
                 int num_of_complete_rows
-                    = Arena_cleanup_and_get_points(arena_vec, complete_row_vec);
-                score += num_of_complete_rows * num_of_complete_rows;
+                    = Playground_cleanup_and_get_points(playground_vec, complete_row_vec);
+                int points = num_of_complete_rows * num_of_complete_rows;
+                level_score += points;
+                score += points;
                 for (uint8_t i = 0; i < num_of_complete_rows; i++)
                 {
-                    Display_color_arena_row(arena_vec, complete_row_vec[i]);
+                    Display_color_playground_row(playground_vec, complete_row_vec[i]);
                 }
                 for (uint8_t i = 0; i < num_of_complete_rows; i++)
                 {
                     // Remove rows from the top to the bottom so that the nex row to be removed is
                     // not shifted and its index is still valid.
-                    Arena_remove_row(arena_vec, complete_row_vec[i]);
+                    Playground_remove_row(playground_vec, complete_row_vec[i]);
                 }
-                Display_print_header(&next_tetromino, score);
-                if (is_touchdown(arena_vec, &curr_tetromino))
+                Display_print_header(&next_tetromino, score, curr_level);
+                if (is_touchdown(playground_vec, &curr_tetromino))
                 {
                     printf("\e[33mGAME OVER\e[0m - PRESS ESC TO QUIT\n");
                     break;
+                }
+                if (level_score >= level_score_threshold)
+                {
+                    // Level completed - reset the playground
+                    curr_level++;
+                    level_score = score % level_score_threshold;
+                    gravity_rate *= 0.9;
+                    Display_print_header(&next_tetromino, score, curr_level);
+                    Playground_init(playground_vec);
                 }
                 continue;
             }

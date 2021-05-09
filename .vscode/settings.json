@@ -6,7 +6,7 @@
 		"*.rs": "rust",
 		"common.h": "c",
 		"display.h": "c",
-		"class_arena.h": "c",
+		"class_playground.h": "c",
 		"logger.h": "c"
 	}
 }

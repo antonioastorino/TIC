@@ -187,6 +187,6 @@ Tetromino Tetromino_new()
         break;
     }
     tetromino.position.x = 1;
-    tetromino.position.y = 4;
+    tetromino.position.y = 5;
     return tetromino;
 }
