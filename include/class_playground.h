@@ -2,6 +2,11 @@
 #define CLASS_ARENA_H
 #include "class_tetromino.h"
 #include <stdlib.h>
+
+#ifdef __linux__
+typedef u_int8_t uint8_t;
+#endif
+
 #define ROWS 25
 #define COLS 13 // left border + 10 + right border + null char
 

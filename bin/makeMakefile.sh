@@ -61,7 +61,7 @@ echo $sys_libs
 for l in ${sys_libs[@]}; do
 	# TODO: add more cases as we go (for Ubuntu)
 	case $l in
-	thread)
+    pthread.h)
 		LDLIBS="$LDLIBS -pthread"
 		;;
 	esac
