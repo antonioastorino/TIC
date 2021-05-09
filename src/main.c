@@ -1,10 +1,8 @@
 #include "class_arena.h"
 #include "class_block.h"
 #include "collision.h"
-#include "common.h"
 #include "display.h"
 #include "keyboard.h"
-#include "logger.h"
 #include <memory.h>
 #include <pthread.h>
 #include <stdbool.h>
@@ -25,7 +23,6 @@ int main()
     // Clear screen and make cursor invisible.
     printf("\e[2J\e[?25l");
     Keyboard_init();
-    init_logger("logs.log", "logs.log");
     Arena_init(arena_vec);
     pthread_t keyboard_t;
     void* fn = Keyboard_listen;

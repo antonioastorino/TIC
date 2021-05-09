@@ -1,6 +1,4 @@
 #include "keyboard.h"
-#include "common.h"
-#include "logger.h"
 #include <stdio.h>
 #include <termios.h>
 #include <unistd.h>
@@ -29,7 +27,6 @@ void Keyboard_init()
 void Keyboard_press(char c)
 {
     pthread_mutex_lock(&keyboard_lock);
-    LOG_DEBUG("Key %d pressed", c);
     switch (c)
     {
     case 'a':
@@ -61,7 +58,6 @@ void Keyboard_press(char c)
 
 void Keyboard_listen()
 {
-    LOG_INFO("Starting keyboard listener.");
     Keyboard_release_all();
     while (1)
     {
@@ -76,7 +72,6 @@ void Keyboard_listen()
 
 void Keyboard_release_all()
 {
-    LOG_TRACE("Releasing all keys - log level");
     pthread_mutex_lock(&keyboard_lock);
     key_pressed.key_a     = false;
     key_pressed.key_d     = false;

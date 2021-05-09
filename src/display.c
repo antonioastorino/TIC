@@ -1,7 +1,7 @@
 #include "display.h"
 #include "collision.h"
 #include "keyboard.h"
-#include "logger.h"
+#include <memory.h>
 #include <stdio.h>
 #include <unistd.h>
 #define PREVIEW_ROWS 3

@@ -1,5 +1,4 @@
 #include "class_arena.h"
-#include "logger.h"
 #include <memory.h>
 
 void Arena_init(Arena* arena_vec)
@@ -8,9 +7,9 @@ void Arena_init(Arena* arena_vec)
     for (int row = 0; row < ROWS - 1; row++)
     {
         // Left margin.
-        arena_vec[row * COLS] = '\\';
+        arena_vec[row * COLS] = '|';
         // Right margin.
-        arena_vec[row * COLS + COLS - 2] = '/';
+        arena_vec[row * COLS + COLS - 2] = '|';
         // EOL
         arena_vec[row * COLS + COLS - 1] = '\0';
     }
@@ -21,11 +20,7 @@ void Arena_init(Arena* arena_vec)
     arena_vec[ROWS * COLS - 1] = '\0';
 }
 
-char Arena_get_char_at(Arena* arena_vec, int8_t x, int8_t y)
-{
-    LOG_DEBUG("Getting char at (%d, %d)", x, y);
-    return arena_vec[x * COLS + y];
-}
+char Arena_get_char_at(Arena* arena_vec, int8_t x, int8_t y) { return arena_vec[x * COLS + y]; }
 
 void Arena_set_char_at(Arena* arena_vec, char c, int8_t x, int8_t y)
 {

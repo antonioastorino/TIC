@@ -1,5 +1,4 @@
 #include "class_block.h"
-#include "logger.h"
 #include <memory.h>
 
 void Block_move(Block* block, Direction direction)
@@ -34,7 +33,6 @@ void Block_rotate(Block* block, Direction direction)
 {
     if (block->can_rotate)
     {
-        LOG_DEBUG("Trying to execute rotation");
         int sign;
         if (direction == CCW)
         {
@@ -47,7 +45,6 @@ void Block_rotate(Block* block, Direction direction)
         else
         {
             // Wrong rotation direction
-            LOG_ERROR("Wrong parameter `direction`");
             exit(1);
         }
         Point tmp_bricks[BLOCK_SIZE];
@@ -57,7 +54,6 @@ void Block_rotate(Block* block, Direction direction)
             block->bricks[i].x = sign * (tmp_bricks[i].y);
             block->bricks[i].y = -sign * (tmp_bricks[i].x);
         }
-        LOG_DEBUG("Rotation successfully executed");
     }
 }
 
@@ -173,7 +169,7 @@ Block Block_new()
     default:
         break;
     }
-    block.position.x = 2;
+    block.position.x = 1;
     block.position.y = 4;
     return block;
 }
