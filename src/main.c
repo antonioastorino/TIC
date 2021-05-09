@@ -37,7 +37,7 @@ int main()
     uint16_t level_score                 = 0;
     uint16_t gravity_rate                = 1000;
     uint16_t curr_level                  = 0;
-    const uint16_t level_score_threshold = 50;
+    const uint16_t level_score_threshold = 40;
     Display_print_header(&next_tetromino, score, curr_level);
     bool run = true;
     while (run)
@@ -81,7 +81,7 @@ int main()
                     // Level completed - reset the playground
                     curr_level++;
                     level_score = score % level_score_threshold;
-                    gravity_rate *= 0.9;
+                    gravity_rate *= 0.85;
                     Display_print_header(&next_tetromino, score, curr_level);
                     Playground_init(playground_vec);
                 }
