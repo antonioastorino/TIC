@@ -10,7 +10,7 @@ Speaking of which, TIC works on Mac and Linux.
 Run
 
 ```
-bin/makeMakefile && make && ./tetris-0
+bin/makeMakefile.sh && make && ./tetris-0
 ```
 
 ### Key bindings
